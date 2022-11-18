@@ -192,8 +192,8 @@ button.prototype.handleMouseClick = function() {
 
 var splashBtn = new button(
     {
-     x: 141,
-     y: 157,
+     x: 131,
+     y: 274,
      label: "Game Start",
      width: 150,
      height: 50,
@@ -204,12 +204,18 @@ var splashBtn = new button(
 );
 
 /***********
-    GAME
+    SCENES
 ************/
 var scene1 = function(){
-    drawBitmojiMitkowski(-2,100,72);
-    splashBtn.draw();
+    background(255, 255, 255);
     
+    textSize(15);
+    text("By Everett Mitkowski and Alisha Alabede",67,244);
+    textSize(46);
+    text("SpaceShip",93,53);    //Couldn't think of a title :(
+    drawBitmojiMitkowski(-2,100,72);
+    
+    splashBtn.draw();
     mouseClicked = function() {
     splashBtn.handleMouseClick();
     };
@@ -219,6 +225,11 @@ var scene2 = function(){
         background(255, 0, 0);
         
     };
+
+
+/****************
+    RUN GAME
+*****************/
 draw = function() {
     if (scene === 0){
         scene1();
