@@ -1,5 +1,5 @@
     //Draw whole bitmoji
-var drawBitmoji = function (bodyX, bodyY, bodySize){
+var drawBitmojiMitkowski = function (bodyX, bodyY, bodySize){
     
     var drawHead = function(bodyX, bodyY, bodySize){
         var e = bodySize/100;
