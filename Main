@@ -152,9 +152,6 @@ line(117,184,111,165); // 2nd letter line to the right
 line(117,175,109,175); // connecting line right
 };
 
-
-
-
 var scene = 0;
 
 /*********
@@ -198,6 +195,8 @@ var splashBtn = new button(
      x: 141,
      y: 157,
      label: "Game Start",
+     width: 150,
+     height: 50,
      onClick: function() {
          scene = +1;
      }
@@ -215,6 +214,7 @@ var scene1 = function(){
     splashBtn.handleMouseClick();
     };
 };
+
 var scene2 = function(){
         background(255, 0, 0);
         
@@ -226,3 +226,4 @@ if (scene === 0){
 else if (scene === 1){
     scene2();
 }
+
