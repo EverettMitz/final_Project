@@ -219,11 +219,11 @@ var scene2 = function(){
         background(255, 0, 0);
         
     };
-
-if (scene === 0){
-    scene1();
-} 
-else if (scene === 1){
-    scene2();
-}
-
+draw = function() {
+    if (scene === 0){
+        scene1();
+    } 
+    else if (scene === 1){
+        scene2();
+    }
+};
