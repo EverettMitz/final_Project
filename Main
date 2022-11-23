@@ -162,15 +162,17 @@ var button = function(config) {
     this.y = config.y || 0;
     this.width = config.width || 150;
     this.height = config.height || 50;
+    this.round = config.round || 0;
     this.label = config.label || "Click";
+    this.color = config.color || color(255, 255, 255);
     this.onClick = config.onClick || function() {};
 };
 
 button.prototype.draw = function() {
-    fill(0, 234, 255);
-    rect(this.x, this.y, this.width, this.height, 5);
-    fill(0, 0, 0);
-    textSize(19);
+    fill(this.color);
+    rect(this.x, this.y, this.width, this.height, this.round);
+    fill(255, 255, 255);
+    textSize(23);
     textAlign(LEFT, TOP);
     text(this.label, this.x+10, this.y+this.height/4);
 };
@@ -192,11 +194,13 @@ button.prototype.handleMouseClick = function() {
 
 var splashBtn = new button(
     {
-     x: 131,
-     y: 274,
-     label: "Game Start",
-     width: 150,
-     height: 50,
+     x: 89,
+     y: 280,
+     round: 28,
+     label: "      Game Start",
+     color: color(0, 191, 255, 90),
+     width: 230,
+     height: 49,
      onClick: function() {
          scene = +1;
      }
@@ -207,8 +211,9 @@ var splashBtn = new button(
     SCENES
 ************/
 var scene1 = function(){
-    background(255, 255, 255);
+    background(0, 0, 0);
     
+    fill(0, 168, 240, 200);
     textSize(15);
     text("By Everett Mitkowski and Alisha Alabede",67,244);
     textSize(46);
