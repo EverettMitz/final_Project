@@ -109,47 +109,47 @@ var drawBitmojiMitkowski = function (bodyX, bodyY, bodySize){
         drawBitmojiHead(bodyX, bodyY, bodySize);
         drawBitmojiBody(bodyX, bodyY, bodySize);
 };
-var drawBitmojiAlabede = function(){
+var drawBitmojiAlabede = function(bitmojiX,bitmojiY){
     fill(255, 255, 255); // fill for earring
     stroke(212,175,55); // earring color
-    ellipse(64,127,30,30); // left earring
-    ellipse(130,127,30,30); // right earring
+    ellipse(bitmojiX-36,bitmojiY+27,30,30); // left earring
+    ellipse(bitmojiX+30,bitmojiY+27,30,30); // right earring
     noStroke();
     fill(111,79,29); // fill to skin tone
-    ellipse(100,100,70,86);  //head
+    ellipse(bitmojiX,bitmojiY,70,86);  //head
     fill(255, 255, 255); // Under scarf color hijab
-    ellipse(101,70,83,60);  // under scarf
+    ellipse(bitmojiX+1,bitmojiY-30,83,60);  // under scarf
     fill(11, 156, 16); //  Big scarf hijab color
-    quad(23, 150, 63, 68, 87, 51, 54, 150); // left side hijab
-    quad(165, 150, 134, 68, 113, 50, 135, 150); // right side hijab
-    ellipse(99,68,72,42);  // top scarf
+    quad(bitmojiX-77, bitmojiY+50, bitmojiX-37, bitmojiY-32, bitmojiX-13, bitmojiY-49, bitmojiX-46, bitmojiY+50); // left side hijab
+    quad(bitmojiX+65, bitmojiY+50, bitmojiX+34, bitmojiY-32, bitmojiX+13, bitmojiY-50, bitmojiX+35, bitmojiY+50); // right side hijab
+    ellipse(bitmojiX-1,bitmojiY-32,72,42);  // top scarf
     stroke(0, 0, 0); // stroke to black for glasses
     fill(111,79,29); // fill to skin tone for glasses
-    ellipse(85,112,18,15); // left glasses
-    ellipse(112,112,18,15); // right glasses
-    line(94,112,102,112); // glasses nose bridge
-    line(137,103,120,115); // glasses side right
-    line(75,111,63,102); // glasses side left
+    ellipse(bitmojiX-15,bitmojiY+12,18,15); // left glasses
+    ellipse(bitmojiX+12,bitmojiY+12,18,15); // right glasses
+    line(bitmojiX-6,bitmojiY+12,bitmojiX+2,bitmojiY+12); // glasses nose bridge
+    line(bitmojiX+37,bitmojiY+3,bitmojiX+20,bitmojiY+15); // glasses side right
+    line(bitmojiX-25,bitmojiY+11,bitmojiX-37,bitmojiY+2); // glasses side left
     fill(0, 0, 0); // black eyes fill
-    ellipse(85,112,7,7); // left eye
-    ellipse(112,112,7,7); // right eye
+    ellipse(bitmojiX-15,bitmojiY+12,7,7); // left eye
+    ellipse(bitmojiX+12,bitmojiY+12,7,7); // right eye
     fill(111,79,29); // fill to skin tone
-    bezier(101,116,122,134,95,125,101,128); //nose
+    bezier(bitmojiX+1,bitmojiY+16,bitmojiX+22,bitmojiY+34,bitmojiX-5,bitmojiY+25,bitmojiX+1,bitmojiY+28); //nose
     fill(111,79,29); // fill to skin tone for lips
-    arc(101, 135, 15, 11, 1, 180); // bottom lips
-    arc(101, 135, 15, -11, 1, 180); // top lip
-    line(94,135,108,135); // line in-between lips
+    arc(bitmojiX+1, bitmojiY+35, 15, 11, 1, 180); // bottom lips
+    arc(bitmojiX+1, bitmojiY+35, 15, -11, 1, 180); // top lip
+    line(bitmojiX-6,bitmojiY+35,bitmojiX+8,bitmojiY+35); // line in-between lips
     fill(0, 117, 4); // shirt color 
-    rect(69, 143, 60, 53); // shirt
+    rect(bitmojiX-31, bitmojiY+43, 60, 53); // shirt
     fill(111,79,29); // fill to skin tone for shirt-indent
-    triangle(90, 144, 114, 145, 102, 159); // shirt indent
+    triangle(bitmojiX-10, bitmojiY+44, bitmojiX+14, bitmojiY+45, bitmojiX+2, bitmojiY+59); // shirt indent
     stroke(255, 255, 255); // letter initial color 
-    line(77,184,82,165); // 1st letter line to the left
-    line(88,184,82,165); // 2nd letter line to the left
-    line(88,176,79,175); // connecting line left
-    line(106,184,111,165); // 1st letter line to the right
-    line(117,184,111,165); // 2nd letter line to the right
-    line(117,175,109,175); // connecting line right
+    line(bitmojiX-23,bitmojiY+84,bitmojiX-18,bitmojiY+65); // 1st letter line to the left
+    line(bitmojiX-12,bitmojiY+84,bitmojiX-18,bitmojiY+65); // 2nd letter line to the left
+    line(bitmojiX-12,bitmojiY+76,bitmojiX-21,bitmojiY+75); // connecting line left
+    line(bitmojiX+6,bitmojiY+84,bitmojiX+11,bitmojiY+65); // 1st letter line to the right
+    line(bitmojiX+17,bitmojiY+84,bitmojiX+11,bitmojiY+65); // 2nd letter line to the right
+    line(bitmojiX+17,bitmojiY+75,bitmojiX+9,bitmojiY+75); // connecting line right
 };
 
 var scene = 0;
@@ -306,17 +306,23 @@ var tileSet = [];
             y:
             stars:
         }; */
+//Element of Current Tile in tileSet
+var currentTileNum = -1;
+
 
         /**********
            TILE
         **********/
 //This is where you would add other things to a tile. 
-var generateTile = function(count){
+    //Count is number of stars. tileSize is the pixels in either direction. A tileSize       of 200 is a 400*400 large tile.  
+var generateTile = function(count, tileSize){
     //Creates the object for a new tile
     var tile = {};
     //Grabs the X and Y cordinated of the tile. This means that global X and Y need to change before the tile is generated
-    tile.x = (tilePosX);
-    tile.y = (tilePosY);
+    tile.x = tilePosX;
+    tile.y = tilePosY;
+    
+    tile.size = tileSize;
     
 //Generates stars
     //Temporay array to hold stars. Will later be listed under parametes "stars"
@@ -324,10 +330,10 @@ var generateTile = function(count){
     
     //Creates all the needed variables for "count" number of stars
     for(var i = 0; i < count; i++){
-        starsTemp.push({x:random(-1000,1000),y:random(-1000,1000),s:random(1,8),c:color(random(150,255), random(0,250), random(0,50), random(150,255))});
+        starsTemp.push({x:random(-tileSize,tileSize),y:random(-tileSize,tileSize),s:random(1,8),c:color(random(150,255), random(0,250), random(0,50), random(150,255))});
     }
     
-    //First sets the list of stars as the paremeter stars under the created tile
+    //First sets the list of stars as the paremeter stars under the created tile.
     tile.stars = (starsTemp);
     
     //Pushes the created tile into the global tileSet array. 
@@ -344,6 +350,12 @@ var loadTile = function(tileNum){
         fill(tileSet[tileNum].stars[i].c); //grabs color
         ellipse(tileSet[tileNum].stars[i].x, tileSet[tileNum].stars[i].y, tileSet[tileNum].stars[i].s, tileSet[tileNum].stars[i].s); //grabs parameters 
     }
+    
+    //Temporary Border
+    noFill();
+    strokeWeight(10);
+    stroke(255, 0, 255);
+    rect(-tileSet[tileNum].size,-tileSet[tileNum].size,2000,2000);
 };
 
         /****************
@@ -354,6 +366,15 @@ var translateMouse = function(){
     mouseYT = mouseY - translateTileY;
 };
 
+var findCurrentTile = function(){
+    var cordCheck = function(cord){
+        return cord.x === tilePosX && cord.y === tilePosY;
+    };
+    
+    currentTileNum = tileSet.findIndex(cordCheck);
+};
+
+//Moves the tile so the ship does not hit the edge of the screen
 var moveTile = function(){
         //Move Limits change how close to the edge of the screen player can go
     var moveLimitX = (width/3);
@@ -370,7 +391,32 @@ var moveTile = function(){
     if(playerShipY + translateTileY > (height - moveLimitY)){
         translateTileY -= playerShip_Accel_Y; 
     }
+};
+
+//Changes Cordinates if ship leaves Tile
+var tileChange = function(){
+    var entryDistance = tileSet[currentTileNum].size*2;
     
+    if(playerShipX > tileSet[currentTileNum].size){
+        tilePosX += 1;
+        translateTileX = translateTileX + entryDistance;
+        playerShipX = playerShipX - entryDistance;
+    }
+    else if(playerShipX < -tileSet[currentTileNum].size){
+        tilePosX -= 1;
+        translateTileX = translateTileX - entryDistance;
+        playerShipX = playerShipX + entryDistance;
+    }
+    else if(playerShipY < -tileSet[currentTileNum].size){
+        tilePosY += 1;
+        translateTileY = translateTileY - entryDistance;
+        playerShipY = playerShipY + entryDistance;
+    }
+    else if(playerShipY > tileSet[currentTileNum].size){
+        tilePosY -= 1;
+        translateTileY = translateTileY + entryDistance;
+        playerShipY = playerShipY - entryDistance;
+    }
 };
         /****************
         STEERING/MOVEMENT
@@ -434,22 +480,27 @@ var drawShip = function(){
         
     popMatrix();
 };
-
-                /***************
-                    RUN GAME
-                ***************/
-var scene2 = function(){
-    //Create Spaceship & follow mouse
-    var follow = function (){
-        generateTile(1000); //Generates Tile
-        
+        /****************
+            SPACE CODE 
+        ******************/
+var exploreSpace = function (){
+    var tileNotGenerated = function(){
+        return currentTileNum === -1;
+    };
+    
+    findCurrentTile(); //Find tile element number
+    
+    if (tileNotGenerated()){
+        generateTile(1000,1000); //Generates Tile if does not exist
+    }
+    
+    if (!tileNotGenerated()){
+        tileChange();//checks to see if ship has left tile
         translateMouse();//Translates mouse 
         moveTile();//Modifies translateTile X and Y in the code below
         pushMatrix();
         translate(translateTileX,translateTileY);
-        
-        loadTile(0); //Draws Stars
-        
+            loadTile(currentTileNum); //Draws Stars
         //set steering type to mouse
         if(steeringType === "mouse"){
         mouseControl(); //Adjusts acceleration and rotation according to mouse position
@@ -462,16 +513,21 @@ var scene2 = function(){
         drawShip();
         
         popMatrix();//matrix right under follow is declared
-        
-        /*************
-            DEBUG
-        *************/
-        // println("y:" + distanceY + "  x:" + distanceX + "  XY:" + round(distance));
-        //println("y:" + playerShip_Accel_Y + "  x:" + playerShip_Accel_X);
-    };
-
-    follow();
-
+    }
+    /*************
+        DEBUG
+    *************/
+    //println("("+tilePosY+" , " + tilePosX + ")");
+    // println("y:" + distanceY + "  x:" + distanceX + "  XY:" + round(distance));
+    //println("y:" + playerShip_Accel_Y + "  x:" + playerShip_Accel_X);
+    //println("PlayerX: " + round(playerShipX) + "  PlayerY: " + round(playerShipY));
+};
+    
+                /***************
+                    RUN GAME
+                ***************/
+var scene2 = function(){
+    exploreSpace();
 };
 
                         /**********************
