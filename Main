@@ -224,8 +224,8 @@ var settingsBtn = new button(
 /**************
   KEY TRACKER
  ************/
-//to use put Key[] inside of an if function. It will return  true if whatever inside of the brackets matches the code for the corresponding key or keyCode. 
-//Code is based partially on Drew Bent's "Multiple Key Presses with Bounces" at https://www.khanacademy.org/computer-programming/multiple-key-presses/977647663. 
+//to use put Keys[] inside of an if function. It will return true if whatever inside of the brackets matches the corresponding key or keyCode, ei. Keys[UP] for up arrow or keys[32] for space bar. 
+//Code for reading multiple simultaneous key presses based partially on Drew Bent's "Multiple Key Presses with Bounces" at https://www.khanacademy.org/computer-programming/multiple-key-presses/977647663
 
 var keys = {}; 
 
@@ -263,101 +263,205 @@ var scene1 = function(){
     
     splashBtn.draw();
     settingsBtn.draw();
-    mouseClicked = function() {
-        splashBtn.handleMouseClick();
-        settingsBtn.handleMouseClick();
-    };
+    
+    //Use mouseIsPressed Instead of the mouseClicked function, as mouseClicked function still operates even when scene1 is not called. Gonna say issue with khan, but might be wrong.
+    if(mouseIsPressed){
+    splashBtn.handleMouseClick();
+    settingsBtn.handleMouseClick();
+    }
+
     
 };
 
                         /**********************
-                          RUNNING GAME(SCENE 1)
+                            GAME(SCENE 1)
                         ************************/
-//Global Variables
+                /**********
+                   INDEX
+                **********/
+        /***********************
+          !!!GLOBAL VARIABLES!!!
+        *************************/
+    //Variables to determin ship position
 var playerShipX = 200; 
 var playerShipY = 200;
+    //Variables to determin ship acceleration
 var playerShip_Accel_X = 0;
 var playerShip_Accel_Y = 0;
+    //Variables for the translation of screen to follow the player. 
+var translateTileX = 0;
+var translateTileY = 0;
+    //Variable to describe angle of ship
+var playerAngle;
+    //Translated mouseX and mouseY (Run translateMouse(); first)
+var mouseXT;
+var mouseYT;
+    //Tile Cordinates
+var tilePosX = 0;
+var tilePosY = 0;
+    //Tile Description
+var tileSet = [];
+    /* {
+            x:
+            y:
+            stars:
+        }; */
 
-var scene2 = function(){
-    //Create Spaceship & follow mouse
-    var follow = function (){
-        
-        //Distance of ship from Mouse. Total, Y-axis, X-axis. 
-        var distance = sqrt(pow(mouseX-playerShipX,2)+pow(mouseY-playerShipY,2));//Total distance
-        var distanceY = playerShipY-mouseY;// Distance of ship on the Y axis
-        var distanceX = mouseX-playerShipX;// Distance of ship on the X axis
-        
-        /****************
-         MOUSE STEERING
-        ******************/
-        var mouseControl = function(){
-            var PlayerSpeed = 20; //higher = slower
-            var PlayerAcceleration = 0.4;
-            var PlayerFriction = 0.95; //higher = less Friction
-            
-                //Adjusts acceleration depending on distance from mouse
-            //Acceleration controlls for X
-            if(keyIsPressed && keys[32]){
-                if (distanceX > 0){
-                    playerShip_Accel_X = playerShip_Accel_X + (pow(abs(distanceX), (PlayerAcceleration))/PlayerSpeed);
-                }
-                else if (distanceX < 0){
-                    playerShip_Accel_X = playerShip_Accel_X - (pow(abs(distanceX), (PlayerAcceleration))/PlayerSpeed);
-                }
-                //Acceleration controlls for Y
-                if (distanceY > 0){
-                    playerShip_Accel_Y = playerShip_Accel_Y - (pow(abs(distanceY), (PlayerAcceleration))/PlayerSpeed);
-                }
-                else if (distanceY < 0){
-                    playerShip_Accel_Y = playerShip_Accel_Y + (pow(abs(distanceY), (PlayerAcceleration))/PlayerSpeed);
-                }
-            }
-            
-            //Deceleration
-            playerShip_Accel_Y = playerShip_Accel_Y*PlayerFriction;
-            playerShip_Accel_X = playerShip_Accel_X*PlayerFriction;
+        /**********
+           TILE
+        **********/
+//This is where you would add other things to a tile. 
+var generateTile = function(count){
+    //Creates the object for a new tile
+    var tile = {};
+    //Grabs the X and Y cordinated of the tile. This means that global X and Y need to change before the tile is generated
+    tile.x = (tilePosX);
+    tile.y = (tilePosY);
     
-            
-        };
-        
-        //set steering type to mouse
-        if(steeringType === "mouse"){
-        mouseControl();
+//Generates stars
+    //Temporay array to hold stars. Will later be listed under parametes "stars"
+    var starsTemp = [];
+    
+    //Creates all the needed variables for "count" number of stars
+    for(var i = 0; i < count; i++){
+        starsTemp.push({x:random(-1000,1000),y:random(-1000,1000),s:random(1,8),c:color(random(150,255), random(0,250), random(0,50), random(150,255))});
+    }
+    
+    //First sets the list of stars as the paremeter stars under the created tile
+    tile.stars = (starsTemp);
+    
+    //Pushes the created tile into the global tileSet array. 
+    tileSet.push(tile);
+};
+
+
+//Load stars depedning on what tileNum it is 
+var loadTile = function(tileNum){
+    background(0, 0, 0);
+    //Draws a number of ellipses equal to the number of stars as defined by the tile. 
+    for(var i = 0; i <tileSet[tileNum].stars.length; i++){
+        noStroke();
+        fill(tileSet[tileNum].stars[i].c); //grabs color
+        ellipse(tileSet[tileNum].stars[i].x, tileSet[tileNum].stars[i].y, tileSet[tileNum].stars[i].s, tileSet[tileNum].stars[i].s); //grabs parameters 
+    }
+};
+
+        /****************
+          TILE MOVEMENT
+        ******************/
+var translateMouse = function(){
+    mouseXT = mouseX - translateTileX;
+    mouseYT = mouseY - translateTileY;
+};
+
+var moveTile = function(){
+        //Move Limits change how close to the edge of the screen player can go
+    var moveLimitX = (width/3);
+    var moveLimitY = (height/3);
+    if(playerShipX + translateTileX < moveLimitX){
+        translateTileX -= playerShip_Accel_X;
+    }
+    if(playerShipX + translateTileX > (width - moveLimitX)){
+        translateTileX -= playerShip_Accel_X;
+    }
+    if(playerShipY + translateTileY < moveLimitY){
+        translateTileY -= playerShip_Accel_Y; 
+    }
+    if(playerShipY + translateTileY > (height - moveLimitY)){
+        translateTileY -= playerShip_Accel_Y; 
+    }
+    
+};
+        /****************
+        STEERING/MOVEMENT
+        ******************/
+var mouseControl = function(){    
+        //Distance of ship from Mouse. Total, Y-axis, X-axis. 
+    var distance = sqrt(pow(mouseXT-playerShipX,2)+pow(mouseYT-playerShipY,2));//Total distance
+    var distanceY = playerShipY-mouseYT;// Distance of ship on the Y axis
+    var distanceX = mouseXT-playerShipX;// Distance of ship on the X axis
+
+    var PlayerSpeed = 20; //higher = slower
+    var PlayerAcceleration = 0.4;
+    var PlayerFriction = 0.95; //higher = less Friction
+    
+        //Adjusts acceleration depending on distance from mouse
+    //Acceleration controlls for X
+    if(keyIsPressed && keys[32]){
+        if (distanceX > 0){
+            playerShip_Accel_X = playerShip_Accel_X + (pow(abs(distanceX), (PlayerAcceleration))/PlayerSpeed);
         }
+        else if (distanceX < 0){
+            playerShip_Accel_X = playerShip_Accel_X - (pow(abs(distanceX), (PlayerAcceleration))/PlayerSpeed);
+        }
+        //Acceleration controlls for Y
+        if (distanceY > 0){
+            playerShip_Accel_Y = playerShip_Accel_Y - (pow(abs(distanceY), (PlayerAcceleration))/PlayerSpeed);
+        }
+        else if (distanceY < 0){
+            playerShip_Accel_Y = playerShip_Accel_Y + (pow(abs(distanceY), (PlayerAcceleration))/PlayerSpeed);
+        }
+    }
         
-        //Movement
-        playerShipY = playerShipY + playerShip_Accel_Y;
-        playerShipX = playerShipX + playerShip_Accel_X;
-        
+    //Deceleration
+    playerShip_Accel_Y = playerShip_Accel_Y*PlayerFriction;
+    playerShip_Accel_X = playerShip_Accel_X*PlayerFriction;
+};
+
         /****************
          SHIP PARAMETERS 
         ******************/
+
+//calculates the angle between ship and mouse. Sets "angle" equal to this.
+
+//Contains trainslation and rotation to matrix. This means anything outside of the matric is not effected by the angle nor the translation.
+var drawShip = function(){
+    //Change this For size
+    var spaceShipSize = 45;
+    var s = spaceShipSize/100;
+    
+    if(steeringType === "mouse"){
+        playerAngle = (atan2(mouseYT - playerShipY,mouseXT-playerShipX));
+    }
+    pushMatrix();
         
-        //Change this For size
-        var spaceSize = 45;
-        var s = spaceSize/100;
+        translate(playerShipX,playerShipY); //Changes X & Y
+        rotate(playerAngle);
         
-        //calculates the angle between ship and mouse. Sets "angle" equal to this.
-        var angle = (atan2(mouseY - playerShipY,mouseX-playerShipX));
+        noStroke(); //SpaceShip
+        fill(135, 135, 135);
+        triangle(s*-20,s*20,s*-20,s*-20,s*35,s*0);
         
-        background(255, 255, 255);
+    popMatrix();
+};
+
+                /***************
+                    RUN GAME
+                ***************/
+var scene2 = function(){
+    //Create Spaceship & follow mouse
+    var follow = function (){
+        generateTile(1000); //Generates Tile
         
-        //Contains trainslation and rotation to matrix. This means anything outside of the matric is not effected by the angle nor the translation.
+        translateMouse();//Translates mouse 
+        moveTile();//Modifies translateTile X and Y in the code below
         pushMatrix();
-            translate(playerShipX,playerShipY); //Changes X & Y
-            rotate(angle);
-            
-            noStroke(); //SpaceShip
-            fill(135, 135, 135);
-            triangle(s*-20,s*20,s*-20,s*-20,s*35,s*0);
-            
-            resetMatrix();//Stops ellipse from being translated
-            fill(0, 0, 0);
-            ellipse(playerShipX,playerShipY,5,5);
-            
-        popMatrix();
+        translate(translateTileX,translateTileY);
         
+        loadTile(0); //Draws Stars
+        
+        //set steering type to mouse
+        if(steeringType === "mouse"){
+        mouseControl(); //Adjusts acceleration and rotation according to mouse position
+        }
+        
+        //Moves ship based on values described by mouseControl
+        playerShipY = playerShipY + playerShip_Accel_Y;
+        playerShipX = playerShipX + playerShip_Accel_X;
+        
+        drawShip();
+        
+        popMatrix();//matrix right under follow is declared
         
         /*************
             DEBUG
@@ -369,8 +473,9 @@ var scene2 = function(){
     follow();
 
 };
+
                         /**********************
-                          RUNNING GAME(SCENE 1)
+                          SETTINGS (SCENE 2)
                         ************************/
 var scene3 = function(){
     background(0, 0, 0);
@@ -379,7 +484,7 @@ var scene3 = function(){
 };
 
 /****************
-    RUN GAME
+  SCENE SELECT
 *****************/
 draw = function() {
     if (scene === 0){
