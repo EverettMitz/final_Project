@@ -225,7 +225,7 @@ var settingsBtn = new button(
   KEY TRACKER
  ************/
 //to use put Keys[] inside of an if function. It will return true if whatever inside of the brackets matches the corresponding key or keyCode, ei. Keys[UP] for up arrow or keys[32] for space bar. 
-//Code for reading multiple simultaneous key presses based partially on Drew Bent's "Multiple Key Presses with Bounces" at https://www.khanacademy.org/computer-programming/multiple-key-presses/977647663
+//Code for reading multiple simultaneous key presses based partially on Drew Bent's "Multiple Key Presses with Bounces" at https://www.khanacademy.org/computer-programming/multiple-key-presses/977647663 (only about 8ish lines, but I couldn't figure out the concept on my own)
 
 var keys = {}; 
 
@@ -315,22 +315,24 @@ var currentTileNum = -1;
         **********/
 //This is where you would add other things to a tile. 
     //Count is number of stars. tileSize is the pixels in either direction. A tileSize       of 200 is a 400*400 large tile.  
-var generateTile = function(count, tileSize){
+var generateTile = function(config){//count, tileSize, influence, bias
     //Creates the object for a new tile
     var tile = {};
     //Grabs the X and Y cordinated of the tile. This means that global X and Y need to change before the tile is generated
     tile.x = tilePosX;
     tile.y = tilePosY;
     
-    tile.size = tileSize;
+    tile.size = config.tileSize;
     
 //Generates stars
     //Temporay array to hold stars. Will later be listed under parametes "stars"
     var starsTemp = [];
     
+    var inf;
     //Creates all the needed variables for "count" number of stars
-    for(var i = 0; i < count; i++){
-        starsTemp.push({x:random(-tileSize,tileSize),y:random(-tileSize,tileSize),s:random(1,8),c:color(random(150,255), random(0,250), random(0,50), random(150,255))});
+    for(var i = 0; i < config.count; i++){
+    inf = random(0,1) * config.influence;
+        starsTemp.push({x:random(-config.tileSize,config.tileSize),y:random(-config.tileSize,config.tileSize),s:(random(0,15)*(1-inf)+config.bias*inf),c:color(random(150,255), random(0,250), random(0,50), random(200,255))});
     }
     
     //First sets the list of stars as the paremeter stars under the created tile.
@@ -346,16 +348,16 @@ var loadTile = function(tileNum){
     background(0, 0, 0);
     //Draws a number of ellipses equal to the number of stars as defined by the tile. 
     for(var i = 0; i <tileSet[tileNum].stars.length; i++){
-        noStroke();
-        fill(tileSet[tileNum].stars[i].c); //grabs color
-        ellipse(tileSet[tileNum].stars[i].x, tileSet[tileNum].stars[i].y, tileSet[tileNum].stars[i].s, tileSet[tileNum].stars[i].s); //grabs parameters 
+        strokeWeight(tileSet[tileNum].stars[i].s);
+        stroke(tileSet[tileNum].stars[i].c); //grabs color
+        point(tileSet[tileNum].stars[i].x+((translateTileX)*(tileSet[tileNum].stars[i].s*0.05)), tileSet[tileNum].stars[i].y+((translateTileY)*(tileSet[tileNum].stars[i].s*0.05))); //grabs parameters 
     }
     
-    //Temporary Border
+    // Border
     noFill();
-    strokeWeight(10);
-    stroke(255, 0, 255);
-    rect(-tileSet[tileNum].size,-tileSet[tileNum].size,2000,2000);
+    strokeWeight(15);
+    stroke(0, 132, 255,100);
+    rect(-tileSet[tileNum].size,-tileSet[tileNum].size,2000,2000,5);
 };
 
         /****************
@@ -372,6 +374,10 @@ var findCurrentTile = function(){
     };
     
     currentTileNum = tileSet.findIndex(cordCheck);
+};
+
+var tileNotGenerated = function(){
+return currentTileNum === -1;
 };
 
 //Moves the tile so the ship does not hit the edge of the screen
@@ -428,8 +434,8 @@ var mouseControl = function(){
     var distanceX = mouseXT-playerShipX;// Distance of ship on the X axis
 
     var PlayerSpeed = 20; //higher = slower
-    var PlayerAcceleration = 0.4;
-    var PlayerFriction = 0.95; //higher = less Friction
+    var PlayerAcceleration = 0.2;
+    var PlayerFriction = 0.98; //higher = less Friction. 1 is no friction
     
         //Adjusts acceleration depending on distance from mouse
     //Acceleration controlls for X
@@ -480,39 +486,38 @@ var drawShip = function(){
         
     popMatrix();
 };
+
         /****************
             SPACE CODE 
         ******************/
 var exploreSpace = function (){
-    var tileNotGenerated = function(){
-        return currentTileNum === -1;
-    };
-    
     findCurrentTile(); //Find tile element number
     
     if (tileNotGenerated()){
-        generateTile(1000,1000); //Generates Tile if does not exist
-    }
-    
-    if (!tileNotGenerated()){
-        tileChange();//checks to see if ship has left tile
-        translateMouse();//Translates mouse 
-        moveTile();//Modifies translateTile X and Y in the code below
-        pushMatrix();
-        translate(translateTileX,translateTileY);
-            loadTile(currentTileNum); //Draws Stars
-        //set steering type to mouse
-        if(steeringType === "mouse"){
-        mouseControl(); //Adjusts acceleration and rotation according to mouse position
+        //count(star count), tileSize, influence(bias effect), bias(star size skew)
+        generateTile({count:2000,tileSize:1000,influence:2,bias:4}); //Generates Tile if does not exist
+    } else if (!tileNotGenerated()){ // if tile does exit runs game
+        tileChange();//Changes X and Y cords for Tile 
+            //Makes sure that the current tile is correct, otherwise updates it
+        if(tileSet[currentTileNum].x === tilePosX && tileSet[currentTileNum].y === tilePosY){
+            translateMouse();//Translates mouse 
+            moveTile();//Modifies translateTile X and Y in the code below
+            pushMatrix();
+            translate(translateTileX,translateTileY);
+                loadTile(currentTileNum); //Draws Stars
+            //set steering type to mouse
+            if(steeringType === "mouse"){
+            mouseControl(); //Adjusts acceleration and rotation according to mouse position
+            }
+            
+            //Moves ship based on values described by mouseControl
+            playerShipY = playerShipY + playerShip_Accel_Y;
+            playerShipX = playerShipX + playerShip_Accel_X;
+            
+            drawShip();
+            
+            popMatrix();//matrix right under follow is declared
         }
-        
-        //Moves ship based on values described by mouseControl
-        playerShipY = playerShipY + playerShip_Accel_Y;
-        playerShipX = playerShipX + playerShip_Accel_X;
-        
-        drawShip();
-        
-        popMatrix();//matrix right under follow is declared
     }
     /*************
         DEBUG
