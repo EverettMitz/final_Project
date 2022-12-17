@@ -311,12 +311,91 @@ var currentTileNum = -1;
 //Current cash balance
 var balance = 0;
 
+    /************
+       SPRITES
+    *************/
+var loadSpaceStation = function(spaceStationX,spaceStationY,spaceStationSize){
+    var s = spaceStationSize/100;
+    //Purple inside ring
+    strokeWeight(14*s);
+    fill(153, 0, 255,100);
+    stroke(124, 143, 143, 200);
+    ellipse(spaceStationX+0*s,spaceStationY+0*s,132*s,305*s);
+    
+    //center solid body
+    fill(196, 196, 196);
+    noStroke();
+    ellipse(spaceStationX+0*s,spaceStationY+0*s,200*s,125*s);
+    
+    //Center Bottom Ring
+    stroke(20, 0, 46);
+    strokeWeight(21*s);
+    noFill();
+    ellipse(spaceStationX+0*s,spaceStationY+0*s,137*s,125*s);
+    
+    //struts
+    noStroke();
+    fill(163, 180, 194);
+    rect(spaceStationX-115*s,spaceStationY-84*s,230*s,17*s);
+    rect(spaceStationX-115*s,spaceStationY+68*s,230*s,17*s);
+    
+    //underRing
+    noFill();
+    strokeWeight(5*s);
+    stroke(0, 0, 0);
+    rect(spaceStationX-37*s,spaceStationY-77*s,73*s,154*s,35*s);
+    
+    //Center storage bays
+    fill(196, 196, 196);
+    noStroke();
+    ellipse(spaceStationX+30*s,spaceStationY,55*s,200*s);
+    ellipse(spaceStationX-30*s,spaceStationY,55*s,200*s);
+    
+    //Center command
+    //under
+    fill(0, 0, 0);
+    ellipse(spaceStationX+0*s,spaceStationY+0*s,50*s,75*s);
+    //TopPart
+    stroke(20, 0, 46);
+    strokeWeight(5*s);
+    fill(66, 1, 13);
+    quad(
+    spaceStationX-20*s,spaceStationY-35*s,
+    spaceStationX+20*s,spaceStationY-35*s,
+    spaceStationX+35*s,spaceStationY-15*s,
+    spaceStationX-35*s,spaceStationY-15*s);
+    //bottomPart
+    quad(
+    spaceStationX-20*s,spaceStationY+35*s,
+    spaceStationX+20*s,spaceStationY+35*s,
+    spaceStationX+35*s,spaceStationY+15*s,
+    spaceStationX-35*s,spaceStationY+15*s);
+    //MiddlePart
+    strokeWeight(2*s);
+    stroke(0, 0, 0);
+    fill(92, 9, 181);
+    rect(spaceStationX-50*s,spaceStationY-10*s,98*s,8*s,10);
+    rect(spaceStationX-50*s,spaceStationY+0*s,98*s,8*s,10);
+    
+    //Outer ring
+    fill(0, 234, 255,10);
+    stroke(153, 153, 153);
+    strokeWeight(14*s);
+    ellipse(spaceStationX+0*s,spaceStationY+0*s,264*s,304*s);
+    
+    //outer Purple Flourish
+    noFill();
+    stroke(209, 57, 209);
+    strokeWeight(2*s);
+    ellipse(spaceStationX+0*s,spaceStationY+0*s,258*s,312*s);
+};
+
         /************
            UPGRADES
         *************/
 var shortRadar = false;
-//Upgrade to increase Pick Up range of Wreckage
-//Upgrade to have a speed setting (just like 3 settings, maybe more expensive upgrade is slider)
+var tractorBeamSize = 20; //add clear blue circle like border to show size
+//Upgrade to have a speed setting (just like 3 settings, maybe more expensive upgrade is slider
 //
         /******
           UI
@@ -341,6 +420,21 @@ var generateTile = function(config){//count, tileSize, influence, bias
     tile.y = tilePosY;
     tile.size = config.tileSize;
     
+    //20% to spawn space station. Station always exits on first tile.
+    if ((tile.x === 0 && tile.y === 0)){
+    tile.isSpaceStation = true;
+    tile.spaceStationX = random(-500,500);
+    tile.spaceStationY = random(-500,500);
+    tile.spaceStationSize = random(90,200);
+    } else if(random(0,1) >= 0.8){
+    tile.isSpaceStation = true;
+    tile.spaceStationX = random(-config.tileSize+200,config.tileSize-200);
+    tile.spaceStationY = random(-config.tileSize+200,config.tileSize-200);
+    tile.spaceStationSize = random(90,200);
+    } else{
+    tile.isSpaceStation = false;
+    }
+    
     //Generates star
     var generateStars = function(){
         //Temporay array to hold stars. Will later be listed under parametes "stars"
@@ -359,8 +453,6 @@ var generateTile = function(config){//count, tileSize, influence, bias
     //Generate Wreckage  
     var generateWreckage = function(){
         var wreckInf;
-        var wreckInfluence = 2;
-        var wreckBias = 100;
         //Generates locations of clumps of wreckage
         var wreckSites = [];
         for(var i = 0; i<config.wreckCount; i++){
@@ -379,7 +471,7 @@ var generateTile = function(config){//count, tileSize, influence, bias
 //Generates Stars and then wreckage
     generateStars();
     generateWreckage();
-//Pushes the created tile into the global tileSet array. 
+//Pushes the created tile (including earlier stuff) into the global tileSet array. 
     tileSet.push(tile);
 };
 
@@ -399,11 +491,12 @@ var loadTile = function(tileNum){
         }
     };
     
-    //Load Wreckage
+    //Load Wreckage & assortated collection and upgrade functions
     var loadWreckage = function(){
         var centerX;
         var centerY;
         var r;
+        //Nested loop that first generates where clumps will be located, then generated the parameters for each of that sites indivdual wreckage peices. 
         for(var i = 0; i<tileSet[tileNum].sites.length; i++){
             for(var j = 0; j<tileSet[tileNum].sites[i].place.length; j++){
                 centerX = (tileSet[tileNum].sites[i].x+tileSet[tileNum].sites[i].place[j].x)+((translateTileX)*(tileSet[tileNum].sites[i].place[j].distance*0.05));
@@ -411,27 +504,50 @@ var loadTile = function(tileNum){
                 fill(220,220,220);
                 noStroke();
                 var wreckSize = 50;//lower Num = bigger size
-                //Generate wreck shape. Use wreck.site to find the wreck sites, use wreck.placment to find center of indivdual peices of wreck. Instead of generating new list of random numbers for the shapes, I just used the star list as
+                //Generate wreck shape. Use wreck.site to find the wreck sites, use wreck.placment to find center of indivdual peices of wreck. Instead of generating new list of random numbers for the shapes, I just used the star list as it is already random. Added J and I and multiply by the side's number so that each point uses a seperate star cordinate. Will break if star count is less than twice indivdual wreckage count. 
                 if(tileSet[tileNum].sites[i].place[j].collected === false){
                 quad((centerX+tileSet[tileNum].stars[(j+i+1)*1].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*2].y/wreckSize),(centerX+tileSet[tileNum].stars[(j+i+1)*3].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*4].y/wreckSize),(centerX+tileSet[tileNum].stars[(j+i+1)*5].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*6].y/wreckSize),(centerX+tileSet[tileNum].stars[(j+i+1)*7].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*8].y/wreckSize));
                 }
                 
-                //Collection
-                if(tileSet[tileNum].sites[i].place[j].collected === false && abs(playerShipX-centerX) <= 20 && abs(playerShipY-centerY) <= 20){
-                    balance++;
+                //Collection of wreckage into money 
+            var BalanceInf;
+            var BalanceInfluence = 2;
+            var BalanceBias = 10;
+                if(tileSet[tileNum].sites[i].place[j].collected === false && abs(playerShipX-centerX) <= tractorBeamSize && abs(playerShipY-centerY) <= tractorBeamSize){
+                    //Gives money based on ancient Aztec forumla. Makes smaller numbers more common. Same as with star size & rec radius.
+                    BalanceInf = random(0,1) * BalanceInfluence;
+                    balance = balance + floor(abs((random(10,50)*(1-BalanceInf)+BalanceInfluence*BalanceInf)));
                     tileSet[tileNum].sites[i].place[j].collected = true;
                 }
                 
+                //UPGRADE
                 //SHORTRADAR: Red Circle
-                if(shortRadar === true){
-                stroke(255, 0, 0);
+                if(shortRadar === true && tileSet[tileNum].sites[i].place[j].collected === false){
+                stroke(255, 0, 0, 200);
                 noFill();
-                strokeWeight(1);
-                ellipse(centerX,centerY,25,25);
+                strokeWeight(4);
+                ellipse(centerX,centerY,45,45);
                 }
                 
             }
         }
+    };
+    
+    //Space Station && SS Functionality
+    var loadSpaceStationFunctional = function(){
+        //Loads space station if it is on tile. Adjusted for parallax. 
+        if(tileSet[tileNum].isSpaceStation === true){
+        loadSpaceStation((tileSet[tileNum].spaceStationX+((translateTileX)*(12*0.05))),(tileSet[tileNum].spaceStationY)+((translateTileY)*(12*0.05)),tileSet[tileNum].spaceStationSize);
+        }
+        
+        //Allows entry in shop if player is close to station. Ajusted for parallax.
+        if(abs(playerShipX-(tileSet[tileNum].spaceStationX+((translateTileX)*(12*0.05)))) <= tileSet[tileNum].spaceStationSize*1.75 && abs(playerShipY-(tileSet[tileNum].spaceStationY+((translateTileY)*(12*0.05)))) <= tileSet[tileNum].spaceStationSize*1.75)    {
+            println("press e"); //have this print on hud
+            if(keys[69]){
+                println("enter Store");
+            }
+        }
+
     };
     
     // Border
@@ -441,9 +557,9 @@ var loadTile = function(tileNum){
         stroke(0, 132, 255,100);
         rect(-tileSet[tileNum].size,-tileSet[tileNum].size,2000,2000,5);
     };
-    
     //loads stars first, then wreckage,then border
     loadStars();
+    loadSpaceStationFunctional();
     loadWreckage();
     loadBorder();
 };
@@ -607,6 +723,7 @@ var exploreSpace = function (){
             drawShip();
             
             popMatrix();//matrix right under follow is declared
+            text(balance,10,10);
         }
     }
     /*************
