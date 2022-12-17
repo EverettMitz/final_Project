@@ -318,6 +318,11 @@ var shortRadar = false;
 //Upgrade to increase Pick Up range of Wreckage
 //Upgrade to have a speed setting (just like 3 settings, maybe more expensive upgrade is slider)
 //
+        /******
+          UI
+        ******/
+var loadUI = function(){
+};
 
 
         /**********
@@ -361,10 +366,10 @@ var generateTile = function(config){//count, tileSize, influence, bias
         for(var i = 0; i<config.wreckCount; i++){
             wreckInf = random(0,1) * config.wreckInfluence;
             var wreckPlace = [];
-            wreckSites.push({x:random(-config.tileSize+100,config.tileSize-100), y:random(-config.tileSize+100,config.tileSize-100), radius:(random(80,400)*(1-wreckInf)+config.wreckBias*wreckInf)});
+            wreckSites.push({x:random(-config.tileSize,config.tileSize), y:random(-config.tileSize,config.tileSize), radius:(random(80,400)*(1-wreckInf)+config.wreckBias*wreckInf)});
             //Generations the center peices of individual wrecks. Adds it to the placement of site oject under tile.site[].place[].x or .y
             for (var j = 0; j<wreckSites[i].radius/10; j++){
-                wreckPlace.push({x:random(-wreckSites[i].radius,wreckSites[i].radius), y:random(-wreckSites[i].radius,wreckSites[i].radius),collected:false});
+                wreckPlace.push({x:random(-wreckSites[i].radius,wreckSites[i].radius), y:random(-wreckSites[i].radius,wreckSites[i].radius),distance: random(10,16), collected:false});
             }
             wreckSites[i].place = wreckPlace;
         }
@@ -401,11 +406,11 @@ var loadTile = function(tileNum){
         var r;
         for(var i = 0; i<tileSet[tileNum].sites.length; i++){
             for(var j = 0; j<tileSet[tileNum].sites[i].place.length; j++){
-                centerX = tileSet[tileNum].sites[i].x+tileSet[tileNum].sites[i].place[j].x;
-                centerY = tileSet[tileNum].sites[i].y+tileSet[tileNum].sites[i].place[j].y;
+                centerX = (tileSet[tileNum].sites[i].x+tileSet[tileNum].sites[i].place[j].x)+((translateTileX)*(tileSet[tileNum].sites[i].place[j].distance*0.05));
+                centerY = (tileSet[tileNum].sites[i].y+tileSet[tileNum].sites[i].place[j].y)+((translateTileY)*(tileSet[tileNum].sites[i].place[j].distance*0.05));
                 fill(220,220,220);
                 noStroke();
-                var wreckSize = 70;//lower Num = bigger size
+                var wreckSize = 50;//lower Num = bigger size
                 //Generate wreck shape. Use wreck.site to find the wreck sites, use wreck.placment to find center of indivdual peices of wreck. Instead of generating new list of random numbers for the shapes, I just used the star list as
                 if(tileSet[tileNum].sites[i].place[j].collected === false){
                 quad((centerX+tileSet[tileNum].stars[(j+i+1)*1].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*2].y/wreckSize),(centerX+tileSet[tileNum].stars[(j+i+1)*3].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*4].y/wreckSize),(centerX+tileSet[tileNum].stars[(j+i+1)*5].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*6].y/wreckSize),(centerX+tileSet[tileNum].stars[(j+i+1)*7].x/wreckSize),(centerY+tileSet[tileNum].stars[(j+i+1)*8].y/wreckSize));
@@ -553,7 +558,7 @@ var mouseControl = function(){
 var drawShip = function(){
     //Change this For size
     var spaceShipSize = 45;
-    var s = spaceShipSize/100;
+    var s = spaceShipSize/80;
     
     if(steeringType === "mouse"){
         playerAngle = (atan2(mouseYT - playerShipY,mouseXT-playerShipX));
