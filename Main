@@ -109,47 +109,72 @@ var drawBitmojiMitkowski = function (bodyX, bodyY, bodySize){
         drawBitmojiHead(bodyX, bodyY, bodySize);
         drawBitmojiBody(bodyX, bodyY, bodySize);
 };
-var drawBitmojiAlabede = function(bitmojiX,bitmojiY){
-    fill(255, 255, 255); // fill for earring
-    stroke(212,175,55); // earring color
-    ellipse(bitmojiX-36,bitmojiY+27,30,30); // left earring
-    ellipse(bitmojiX+30,bitmojiY+27,30,30); // right earring
+var drawBitmojiAlabede = function(bitmojiX,bitmojiY,bodySize){
+        //Earrings
+    var e = bodySize/100;
+    
+    noFill();
+    stroke(212,175,55);
+    ellipse(bitmojiX-36*e,bitmojiY+27*e,30*e,30*e); // left earring
+    ellipse(bitmojiX+30*e,bitmojiY+27*e,30*e,30*e); // right earring
+    
+        //Head
     noStroke();
     fill(111,79,29); // fill to skin tone
-    ellipse(bitmojiX,bitmojiY,70,86);  //head
-    fill(255, 255, 255); // Under scarf color hijab
-    ellipse(bitmojiX+1,bitmojiY-30,83,60);  // under scarf
-    fill(11, 156, 16); //  Big scarf hijab color
-    quad(bitmojiX-77, bitmojiY+50, bitmojiX-37, bitmojiY-32, bitmojiX-13, bitmojiY-49, bitmojiX-46, bitmojiY+50); // left side hijab
-    quad(bitmojiX+65, bitmojiY+50, bitmojiX+34, bitmojiY-32, bitmojiX+13, bitmojiY-50, bitmojiX+35, bitmojiY+50); // right side hijab
-    ellipse(bitmojiX-1,bitmojiY-32,72,42);  // top scarf
+    ellipse(bitmojiX,bitmojiY,67*e,86*e);  //head
+    
+            //Glasses
     stroke(0, 0, 0); // stroke to black for glasses
     fill(111,79,29); // fill to skin tone for glasses
-    ellipse(bitmojiX-15,bitmojiY+12,18,15); // left glasses
-    ellipse(bitmojiX+12,bitmojiY+12,18,15); // right glasses
-    line(bitmojiX-6,bitmojiY+12,bitmojiX+2,bitmojiY+12); // glasses nose bridge
-    line(bitmojiX+37,bitmojiY+3,bitmojiX+20,bitmojiY+15); // glasses side right
-    line(bitmojiX-25,bitmojiY+11,bitmojiX-37,bitmojiY+2); // glasses side left
+    ellipse(bitmojiX-13*e,bitmojiY+12*e,18*e,15*e); // left glasses
+    ellipse(bitmojiX+14*e,bitmojiY+12*e,18*e,15*e); // right glasses
+    line(bitmojiX-5*e,bitmojiY+12*e,bitmojiX+4*e,bitmojiY+12*e); // glasses nose bridge
+    line(bitmojiX+37*e,bitmojiY+3*e,bitmojiX+23*e,bitmojiY+11*e); // glasses side right
+    line(bitmojiX-21*e,bitmojiY+10*e,bitmojiX-35*e,bitmojiY+2*e); // glasses side left
+    
+        //Hijab
+    noStroke();
+    fill(245, 255, 248); // Under scarf color hijab
+    ellipse(bitmojiX-1*e,bitmojiY-20*e,73*e,43*e);  // under scarf
+    fill(11, 156, 16); //  Big scarf hijab color
+    quad(bitmojiX-66*e, bitmojiY+43*e, bitmojiX-37*e, bitmojiY-25*e, bitmojiX-17*e, bitmojiY-32*e, bitmojiX-41*e, bitmojiY+50*e); // left side hijab
+    quad(bitmojiX+65*e, bitmojiY+41*e, bitmojiX+34*e, bitmojiY-31*e, bitmojiX+21*e, bitmojiY-18*e, bitmojiX+42*e, bitmojiY+50*e); // right side hijab
+    ellipse(bitmojiX,bitmojiY-24*e,72*e,40*e);  // top scarf
+    
+        //Eyes
+    stroke(0, 0, 0);
     fill(0, 0, 0); // black eyes fill
-    ellipse(bitmojiX-15,bitmojiY+12,7,7); // left eye
-    ellipse(bitmojiX+12,bitmojiY+12,7,7); // right eye
-    fill(111,79,29); // fill to skin tone
-    bezier(bitmojiX+1,bitmojiY+16,bitmojiX+22,bitmojiY+34,bitmojiX-5,bitmojiY+25,bitmojiX+1,bitmojiY+28); //nose
-    fill(111,79,29); // fill to skin tone for lips
-    arc(bitmojiX+1, bitmojiY+35, 15, 11, 1, 180); // bottom lips
-    arc(bitmojiX+1, bitmojiY+35, 15, -11, 1, 180); // top lip
-    line(bitmojiX-6,bitmojiY+35,bitmojiX+8,bitmojiY+35); // line in-between lips
+    ellipse(bitmojiX-13*e,bitmojiY+12*e,7*e,7*e); // left eye
+    ellipse(bitmojiX+14*e,bitmojiY+12*e,7*e,7*e); // right eye
+    
+        //Nose
+    noFill();
+    bezier(bitmojiX+1*e,bitmojiY+16*e,bitmojiX+22*e,bitmojiY+34*e,bitmojiX-5*e,bitmojiY+25*e, bitmojiX+1*e,bitmojiY+28*e);
+    
+        //Lips
+    arc(bitmojiX+1*e, bitmojiY+35*e, 15*e, 11*e, 1, 180); // bottom lips
+    arc(bitmojiX+1*e, bitmojiY+35*e, 15*e, -11*e, 1, 180); // top lip
+    line(bitmojiX-6*e,bitmojiY+35*e,bitmojiX+8*e,bitmojiY+35*e); // line in-between lips
+    
+        //Torso
     fill(0, 117, 4); // shirt color 
-    rect(bitmojiX-31, bitmojiY+43, 60, 53); // shirt
+    noStroke();
+    rect(bitmojiX-30*e, bitmojiY+43*e, 60*e, 53*e, 15); // shirt
+    rect(bitmojiX-30*e, bitmojiY+61*e, 60*e, 35*e); // shirt
     fill(111,79,29); // fill to skin tone for shirt-indent
-    triangle(bitmojiX-10, bitmojiY+44, bitmojiX+14, bitmojiY+45, bitmojiX+2, bitmojiY+59); // shirt indent
+    triangle(bitmojiX-11*e, bitmojiY+43*e, bitmojiX+14*e, bitmojiY+43*e, bitmojiX+2*e, bitmojiY+57*e); // shirt indent
+    
+        //Initials
     stroke(255, 255, 255); // letter initial color 
-    line(bitmojiX-23,bitmojiY+84,bitmojiX-18,bitmojiY+65); // 1st letter line to the left
-    line(bitmojiX-12,bitmojiY+84,bitmojiX-18,bitmojiY+65); // 2nd letter line to the left
-    line(bitmojiX-12,bitmojiY+76,bitmojiX-21,bitmojiY+75); // connecting line left
-    line(bitmojiX+6,bitmojiY+84,bitmojiX+11,bitmojiY+65); // 1st letter line to the right
-    line(bitmojiX+17,bitmojiY+84,bitmojiX+11,bitmojiY+65); // 2nd letter line to the right
-    line(bitmojiX+17,bitmojiY+75,bitmojiX+9,bitmojiY+75); // connecting line right
+    line(bitmojiX-23*e,bitmojiY+84*e,bitmojiX-18*e,bitmojiY+65*e); // 1st letter line to the left
+    line(bitmojiX-12*e,bitmojiY+84*e,bitmojiX-18*e,bitmojiY+65*e); // 2nd letter line to the left
+    line(bitmojiX-12*e,bitmojiY+76*e,bitmojiX-21*e,bitmojiY+75*e); // connecting line left
+    line(bitmojiX+6*e,bitmojiY+84*e,bitmojiX+11*e,bitmojiY+65*e); // 1st letter line to the right
+    line(bitmojiX+17*e,bitmojiY+84*e,bitmojiX+11*e,bitmojiY+65*e); // 2nd letter line to the right
+    line(bitmojiX+17*e,bitmojiY+75*e,bitmojiX+9*e,bitmojiY+75*e); // connecting line right
+    
+    noStroke();
+    noFill();
 };
 
 var scene = 0;
@@ -163,16 +188,18 @@ var button = function(config) {
     this.width = config.width || 150;
     this.height = config.height || 50;
     this.round = config.round || 0;
-    this.label = config.label || "Click";
+    this.textSize = config.textSize || 23;
+    this.label = config.label || "N/A";
     this.color = config.color || color(255, 255, 255);
+    this.textColor = config.textColor || color(255, 255, 255);
     this.onClick = config.onClick || function() {};
 };
 
 button.prototype.draw = function() {
     fill(this.color);
     rect(this.x, this.y, this.width, this.height, this.round);
-    fill(255, 255, 255);
-    textSize(23);
+    fill(this.textColor);
+    textSize(this.textSize);
     textAlign(LEFT, TOP);
     text(this.label, this.x+10, this.y+this.height/4);
 };
@@ -201,22 +228,38 @@ var splashBtn = new button(
      width: 260,
      height: 49,
      onClick: function() {
-         scene = 1;
+         scene = 2;
      }
     }
 );
-//Settings Button
-var settingsBtn = new button(
+//Instruction Button
+var instructionBtn = new button(
     {
      x: 70,
      y: 298,
      round: 28,
-     label: "            Settings",
+     label: "         Instructions",
      color: color(0, 191, 255, 90),
      width: 260,
      height: 49,
      onClick: function() {
-         scene = 2;
+         scene = 1;
+     }
+    }
+);
+//Back to Start from instructions Button
+var backBtn = new button(
+    {
+     x: 3,
+     y: 0,
+     round: 10,
+     textSize:18,
+     label: "Back",
+     color: color(0, 191, 255, 120),
+     width: 62,
+     height: 33,
+     onClick: function() {
+         scene = 0;
      }
     }
 );
@@ -251,7 +294,7 @@ var steeringType = "mouse";
                         /**********************
                           SPLASHSCREEN(SCENE O)
                         ************************/
-var scene1 = function(){
+var scene0 = function(){
     background(0, 0, 0);
     
     fill(0, 168, 240, 200);
@@ -260,21 +303,36 @@ var scene1 = function(){
     textSize(46);
     text("SpaceShip",93,53);    //Couldn't think of a title
     drawBitmojiMitkowski(-2,100,72);
+    drawBitmojiAlabede(345,136,68);
     
     splashBtn.draw();
-    settingsBtn.draw();
+    instructionBtn.draw();
     
     //Use mouseIsPressed Instead of the mouseClicked function, as mouseClicked function still operates even when scene1 is not called. Gonna say issue with khan, but might be wrong.
     if(mouseIsPressed){
     splashBtn.handleMouseClick();
-    settingsBtn.handleMouseClick();
+    instructionBtn.handleMouseClick();
     }
 
     
 };
+                        /**********************
+                          Instructions (SCENE 1)
+                        ************************/
+var scene1 = function(){
+    background(0, 0, 0);
+    fill(255, 0, 0);
+    backBtn.draw();
+    fill(255, 0, 0);
+    text("Press Space to move forwards.",12,64,380,400);
+    text("Press E near a spacestation to enter the station",12,93,380,400);
+    if(mouseIsPressed){
+        backBtn.handleMouseClick();
+    }
+};
 
                         /**********************
-                            GAME(SCENE 1)
+                            GAME(SCENE 2)
                         ************************/
                 /**********
                    INDEX
@@ -310,6 +368,10 @@ var tileSet = [];
 var currentTileNum = -1;
 //Current cash balance
 var balance = 0;
+//Cooldown on clicking upgrade
+var storeCoolDown = 0;
+//Value true is Ship is Close enough to dock on StarShip
+var dockingRange = false;
 
     /************
        SPRITES
@@ -392,23 +454,36 @@ var loadSpaceStation = function(spaceStationX,spaceStationY,spaceStationSize){
 
         /************
            UPGRADES
+           (global)
         *************/
-var shortRadar = false;
-var tractorBeamSize = 20; //add clear blue circle like border to show size
-//Upgrade to have a speed setting (just like 3 settings, maybe more expensive upgrade is slider
-//
-        /******
-          UI
-        ******/
-var loadUI = function(){
-};
+var shortRadar = {
+                    status: 0,
+                    price: 2500,
+                    level: 0,
+                    maxLevel:1
+                };
+                    
+var tractorBeam =  {
+                    size: 25,
+                    price:600,
+                    level: 0,
+                    maxLevel: 15,
+                    color: color(0, 145, 255, 60)
+                    };
+
+var wreckageProcessing = {
+                    bias: 10,
+                    price: 500,
+                    level: 0,
+                    maxLevel:18
+                    };
 
 
         /**********
            TILE
         **********/
 //This is where you would add other things to a tile. 
-    //Count is number of stars. tileSize is the pixels in either direction. A tileSize       of 200 is a 400*400 large tile.  
+    //starCount is number of stars. tileSize is the pixels in either direction. A             tileSize of 200 is a 400*400 large tile.  
 /**********
  GENERATE
 **********/
@@ -421,17 +496,17 @@ var generateTile = function(config){//count, tileSize, influence, bias
     tile.size = config.tileSize;
     
     //20% to spawn space station. Station always exits on first tile.
-    if ((tile.x === 0 && tile.y === 0)){
-    tile.isSpaceStation = true;
-    tile.spaceStationX = random(-500,500);
-    tile.spaceStationY = random(-500,500);
-    tile.spaceStationSize = random(90,200);
-    } else if(random(0,1) >= 0.8){
-    tile.isSpaceStation = true;
-    tile.spaceStationX = random(-config.tileSize+200,config.tileSize-200);
-    tile.spaceStationY = random(-config.tileSize+200,config.tileSize-200);
-    tile.spaceStationSize = random(90,200);
-    } else{
+    if (tile.x === 0 && tile.y === 0){
+        tile.isSpaceStation = true;
+        tile.spaceStationX = 0;
+        tile.spaceStationY = 0;
+        tile.spaceStationSize = random(90,150);
+    } else if (random(0,1) >= 0.8){
+        tile.isSpaceStation = true;
+        tile.spaceStationX = random(-config.tileSize+200,config.tileSize-200);
+        tile.spaceStationY = random(-config.tileSize+200,config.tileSize-200);
+        tile.spaceStationSize = random(90,150);
+        } else {
     tile.isSpaceStation = false;
     }
     
@@ -512,17 +587,16 @@ var loadTile = function(tileNum){
                 //Collection of wreckage into money 
             var BalanceInf;
             var BalanceInfluence = 2;
-            var BalanceBias = 10;
-                if(tileSet[tileNum].sites[i].place[j].collected === false && abs(playerShipX-centerX) <= tractorBeamSize && abs(playerShipY-centerY) <= tractorBeamSize){
+                if(tileSet[tileNum].sites[i].place[j].collected === false && abs(playerShipX-centerX) <= tractorBeam.size && abs(playerShipY-centerY) <= tractorBeam.size){
                     //Gives money based on ancient Aztec forumla. Makes smaller numbers more common. Same as with star size & rec radius.
                     BalanceInf = random(0,1) * BalanceInfluence;
-                    balance = balance + floor(abs((random(10,50)*(1-BalanceInf)+BalanceInfluence*BalanceInf)));
+                    balance = balance + floor(abs((random(10,100)*(1-BalanceInf)+wreckageProcessing.bias*BalanceInf)));
                     tileSet[tileNum].sites[i].place[j].collected = true;
                 }
                 
                 //UPGRADE
                 //SHORTRADAR: Red Circle
-                if(shortRadar === true && tileSet[tileNum].sites[i].place[j].collected === false){
+                if(shortRadar.status === 1 && tileSet[tileNum].sites[i].place[j].collected === false){
                 stroke(255, 0, 0, 200);
                 noFill();
                 strokeWeight(4);
@@ -542,10 +616,13 @@ var loadTile = function(tileNum){
         
         //Allows entry in shop if player is close to station. Ajusted for parallax.
         if(abs(playerShipX-(tileSet[tileNum].spaceStationX+((translateTileX)*(12*0.05)))) <= tileSet[tileNum].spaceStationSize*1.75 && abs(playerShipY-(tileSet[tileNum].spaceStationY+((translateTileY)*(12*0.05)))) <= tileSet[tileNum].spaceStationSize*1.75)    {
-            println("press e"); //have this print on hud
+            dockingRange = true;
             if(keys[69]){
-                println("enter Store");
+                scene = 3;
             }
+        } else {
+            dockingRange = false;
+            
         }
 
     };
@@ -563,6 +640,244 @@ var loadTile = function(tileNum){
     loadWreckage();
     loadBorder();
 };
+
+        /****************
+          STORE (SCENE 3)
+        ******************/
+//Button Prototype for upgrades
+button.prototype.listUpgrade = function(upgrade) {
+    this.draw(); // draws button
+    
+    fill(this.color); //makes info same color as button
+    rect(228,this.y,166,this.height,8); //boxes and text for info
+    fill(64, 247, 110);
+    textSize(10);
+    text("Level:",333,this.y+7);
+    text("Price:",234,this.y+7);
+    
+    fill(173, 173, 173);
+    textSize(20);
+    if(upgrade.level === upgrade.maxLevel){//Stats, show max if level is maxed
+    textSize(18);
+    text("Max",360,this.y+7);
+    textSize(20);
+    text("N/A",262,this.y+7);
+    } else{
+    text(upgrade.level,362,this.y+7);
+    text(upgrade.price,262,this.y+7);
+    }
+    //Upgrades chosen upgrade when clicked and ajusts needed stats
+    if(mouseIsPressed && (balance >= upgrade.price) && (upgrade.level < upgrade.maxLevel) && (storeCoolDown === 0)){
+        this.handleMouseClick();
+    }
+};
+
+//Buttons for upgrades
+var tractorUpgrade = new button(
+    {
+     x: 15,
+     y: 31,
+     round: 28,
+     textSize:15,
+     label: "Increase Tractor beam",
+     color: color(3, 143, 230, 110),
+     width: 181,
+     height: 37,
+     onClick: function() {
+        tractorBeam.size += 5;
+        tractorBeam.level ++;
+        balance -= tractorBeam.price;
+        tractorBeam.price += ceil(5*sq(tractorBeam.level));
+        storeCoolDown = 20;
+        }
+    }
+);
+var shortRadarUpgrade = new button(
+    {
+     x: 15,
+     y: 75,
+     round: 28,
+     textSize:15,
+     label: "Activate Short Radar",
+     color: color(3, 143, 230, 110),
+     width: 181,
+     height: 37,
+     onClick: function() {
+        shortRadar.status ++;
+        shortRadar.level ++;
+        balance -= shortRadar.price;
+     }
+    }
+);
+var wreckageProcessingUpgrade = new button(
+    {
+     x: 15,
+     y: 118,
+     round: 28,
+     textSize:15,
+     label: "Wreckage Efficiency",
+     color: color(3, 143, 230, 110),
+     width: 181,
+     height: 37,
+     onClick: function() {
+        wreckageProcessing.bias += 5;
+        wreckageProcessing.level ++;
+        balance -= wreckageProcessing.price;
+        wreckageProcessing.price += ceil(2*sq(wreckageProcessing.level));
+        storeCoolDown = 20;
+     }
+    }
+);
+
+//Buttons For counter Interaction
+//Exit Button
+var exitStore = new button(
+    {
+     x: 2,
+     y: 262,
+     round: 12,
+     textSize:15,
+     label: "EXIT",
+     color: color(0, 120, 36,150),
+     textColor: color(255, 156, 156),
+     width: 54,
+     height: 34,
+     onClick: function() {
+        noFill();
+        //increases box size if hovered over
+        stroke(194, 184, 0,150);
+        strokeWeight(10);
+        rect(2,262,54,34,12);
+        noStroke();
+        //returns to game if pressed
+        if(mouseIsPressed){
+         scene = 2;
+        }
+     }
+    }
+);
+
+var balancePlaque = new button(
+    {
+     x: 315,
+     y: 197,
+     round: 29,
+     label: " ",
+     color: color(0, 110, 153,150),
+     width: 73,
+     height: 34,
+     onClick: function() {
+        noFill();
+        //increases box size if hovered over
+        stroke(0, 117, 133,150);
+        strokeWeight(10);
+        rect(310,195,82,38,20);
+        noStroke();
+     }
+    }
+);
+
+var store = function(){
+    if(storeCoolDown > 0){
+        storeCoolDown --;
+    }
+    
+    background(0, 0, 0);
+    
+    //Grabs stars. Actual load function is slightly different(wont work) and also local.
+    for(var i = 0; i <tileSet[currentTileNum].stars.length; i++){
+            strokeWeight(tileSet[currentTileNum].stars[i].s);
+            stroke(tileSet[currentTileNum].stars[i].c); //grabs color
+            point(tileSet[currentTileNum].stars[i].x, tileSet[currentTileNum].stars[i].y); //grabs parameters 
+        }
+    
+    //Window and back wall
+    fill(89, 89, 89, 30);
+    strokeWeight(9);
+    stroke(84, 82, 82);
+    rect(0,0,400,400);
+    
+    //Metal Struts
+    fill(111, 0, 255,100); 
+    rect(0,181,400,20);
+    line(400,400,220,205);
+    line(0,400,180,205);
+    
+    //extra window
+    fill(89, 0, 255,20);
+    noStroke();
+    rect(0,0,400,177);
+    
+        //Shop Keeps
+    drawBitmojiMitkowski(16,151,88);
+    drawBitmojiAlabede(233,203,71);
+    
+    //counter Body
+    fill(153, 153, 153);
+    noStroke();
+    rect(0,260,400,140);
+    
+    //Red decorations
+    for(var i = 0; i<230; i++){
+    strokeWeight(3);
+    fill(112, 12, 12);
+    rect(1.3*i+53,sin(i*93)*42+329,-2,9);
+    }
+    
+    //Gold Trims
+    noFill();
+    stroke(145, 118, 0);
+    strokeWeight(10);
+    rect(10,273,380,118);
+    rect(50,287,302,92);
+    
+    //Counter Top
+    fill(117, 117, 117);
+    noStroke();
+    quad(0,260,
+        0,300,
+        400,287,
+        400,260);
+    
+    //Exit Sign
+    exitStore.draw();
+    exitStore.handleMouseClick();
+    //Plaque
+        //base
+    fill(74, 69, 74);
+    ellipse(367,268,24,8);
+        //stand & magnets
+    fill(143, 130, 143,200);
+    rect(363,249,9,21,10);
+    fill(129, 114, 130);
+    ellipse(367,231,24,8);
+    ellipse(367,242,13,8);
+    ellipse(353,243,9,10);
+        //Balance Lable
+    fill(0, 110, 153,150);
+    rect(297,235,55,16,20);
+    fill(173, 255, 198);
+    textSize(12);
+    text("Balance",303,237);
+        //Balance hologram
+    balancePlaque.draw();
+    balancePlaque.handleMouseClick();
+            //Balance Count
+    fill(214, 214, 214);
+    textSize(20);
+    text(balance,329,203);
+
+        
+    //Upgrades
+        //Tractor Beam
+    tractorUpgrade.listUpgrade(tractorBeam);
+        //ShortRadar
+    shortRadarUpgrade.listUpgrade(shortRadar);
+        //processing efficiency
+    wreckageProcessingUpgrade.listUpgrade(wreckageProcessing);
+};
+
+
 
         /****************
           TILE MOVEMENT
@@ -691,6 +1006,70 @@ var drawShip = function(){
     popMatrix();
 };
 
+        /******
+          UI
+        ******/
+resetMatrix();
+var loadUI = function(){
+    resetMatrix();
+    //Balance - top right
+    fill(0, 191, 255, 80);
+    rect(-5,-5,114,29,10);
+    rect(-58,24,103,11,3);
+    textSize(10);
+    fill(221, 247, 207);
+    text("Balance",6,23);
+    textSize(20);
+    fill(255, 255, 255);
+    text(balance+"$",7,0);
+    
+    //GPS- Civilization Detector 
+    fill(0, 191, 255, 80);
+    rect(291,346,113,64,7);
+    triangle(291,348,291,400,229,400);
+    fill(38, 38, 38,200);
+    ellipse(290,353,20,20);
+    rect(302,347,99,14,10);
+    rect(316,361,88,14,10);
+    if(tileSet[currentTileNum].isSpaceStation === true){
+        fill(0, 255, 89,1500);
+        ellipse(290,353,15,15);
+        fill(255, 255, 255);
+        textSize(10);
+        text("Civilization Detected", 305,348);
+        text("SS: "+round(tileSet[currentTileNum].spaceStationX) + " , " +round(tileSet[currentTileNum].spaceStationY),324,361);
+    } else {
+        fill(255, 0, 0,150);
+        ellipse(290,353,15,15);
+        fill(255, 255, 255);
+        textSize(10);
+        text("No Signals Received", 305,348);
+    }
+    
+    //GPS- Universal Cordinated
+    fill(0, 191, 255, 80);
+    rect(296,321,106,20,7);
+    fill(255, 255, 255);
+    text("Universal Cords: " + tilePosX + " , " + tilePosY, 299,326);
+    
+    //GPS- Current Cordinates
+    fill(107, 218, 255, 60);
+    rect(326,377,71,20,7);
+    fill(255, 255, 255);
+    textSize(15);
+    text(round(playerShipX) + " , " + round(playerShipY), 327,377);
+    
+    //Dock Range Detector 
+    if(dockingRange){
+        fill(0, 191, 255, 80);
+        rect(30,342,163,43,12);
+        fill(255, 255, 255);
+        textSize(20);
+        text("Press e to Dock",38,354);
+        
+    }
+    
+};
         /****************
             SPACE CODE 
         ******************/
@@ -723,8 +1102,9 @@ var exploreSpace = function (){
             drawShip();
             
             popMatrix();//matrix right under follow is declared
-            text(balance,10,10);
         }
+        resetMatrix();
+        loadUI();
     }
     /*************
         DEBUG
@@ -734,6 +1114,7 @@ var exploreSpace = function (){
     //println("y:" + playerShip_Accel_Y + "  x:" + playerShip_Accel_X);
     //println("PlayerX: " + round(playerShipX) + "  PlayerY: " + round(playerShipY));
 };
+
     
                 /***************
                     RUN GAME
@@ -742,27 +1123,21 @@ var scene2 = function(){
     exploreSpace();
 };
 
-                        /**********************
-                          SETTINGS (SCENE 2)
-                        ************************/
-var scene3 = function(){
-    background(0, 0, 0);
-    fill(255, 0, 0);
-    text("Controls are just space for thrust at the moment. Real settings (like mouse and key movemnt) in the future. For now this is mostly a placeholder",20,20,380,400);
-};
-
 /****************
   SCENE SELECT
 *****************/
 draw = function() {
     if (scene === 0){
-        scene1();
+        scene0(); //Splash Screen
     } 
     else if (scene === 1){
-        scene2();
+        scene1(); // settings
     }
     else if (scene === 2){
-        scene3();
+        scene2(); //game
+    }
+    else if (scene === 3){
+        store(); //store
     }
 };
 
